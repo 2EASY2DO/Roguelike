@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Characters/Player/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Game.gd" type="Script" id=3]
+[ext_resource path="res://Rooms.gd" type="Script" id=4]
+[ext_resource path="res://Art/v1.1 dungeon crawler 16x16 pixel pack/ui (new)/health_ui.png" type="Texture" id=5]
+[ext_resource path="res://Art/progress bar.png" type="Texture" id=6]
+[ext_resource path="res://UI.gd" type="Script" id=7]
+
+[node name="Game" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource( 7 )
+
+[node name="HealthBar" type="TextureProgress" parent="UI"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 80.0
+margin_bottom = 16.0
+value = 23.0
+texture_over = ExtResource( 5 )
+texture_progress = ExtResource( 6 )
+tint_progress = Color( 0.498039, 0.0313726, 0.0313726, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="UI/HealthBar"]
+
+[node name="Rooms" type="Navigation2D" parent="."]
+script = ExtResource( 4 )
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
+position = Vector2( 133.183, 118.911 )
+hp = 4
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[connection signal="hp_changed" from="Player" to="UI" method="_on_Player_hp_changed"]
