@@ -5,6 +5,12 @@ onready var sword_hitbox: Area2D = get_node("Sword/Node2D/Sprite/Hitbox")
 onready var sword_animation_player: AnimationPlayer = sword.get_node("SwordAnimationPlayer")
 
 
+func _ready() -> void:
+	_restore_previous_state()
+	
+func _restore_previous_state() -> void:
+	self.hp = SavedData.hp
+	
 func _process(_delta: float) -> void:
 	var mouse_direction: Vector2 = (get_global_mouse_position() - global_position).normalized()
 	
