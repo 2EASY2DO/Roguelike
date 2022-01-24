@@ -6,10 +6,13 @@ enum {UP, DOWN}
 
 var current_weapon: Node2D
 
+onready var collider = get_node("CollisionShape2D")
 onready var parent: Node2D = get_parent()
 onready var weapons: Node2D = get_node("Weapons")
 onready var dust_position: Position2D = get_node("DustPosition")
+onready var timer: Node = get_node("Timer")
 
+var able_to_dash: bool = true
 
 func _ready() -> void:
 	_restore_previous_state()
@@ -47,6 +50,10 @@ func get_input() -> void:
 		mov_direction += Vector2.RIGHT
 	if Input.is_action_pressed("ui_up"):
 		mov_direction += Vector2.UP
+	if Input.is_action_just_pressed("ui_dash") and able_to_dash == true:
+		dash()
+		able_to_dash = false
+		timer.start()
 		
 	if not current_weapon.is_busy():
 		if Input.is_action_just_released("ui_previous_weapon"):
@@ -116,3 +123,12 @@ func switch_camera() -> void:
 	main_scene_camera.position = position
 	main_scene_camera.current = true
 	get_node("Camera2D").current = false
+
+
+func _on_Timer_timeout():
+	able_to_dash = true
+	
+
+
+func _on_AnimationPlayer_animation_finished(dash):
+	state_machine.set_state(state_machine.states.idle)

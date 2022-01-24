@@ -31,20 +31,36 @@ func move() -> void:
 	velocity += mov_direction * accerelation
 	velocity = velocity.clamped(max_speed)
 	
+func dash() -> void:
+	state_machine.set_state(state_machine.states.dash)
+	mov_direction = mov_direction.normalized()
+	velocity += mov_direction * 20
 	
 func take_damage(dam: int, dir: Vector2, force: int) -> void:
-	if state_machine.state != state_machine.states.hurt and state_machine.state != state_machine.states.dead:
-		_spawn_hit_effect()
-		self.hp -= dam
-		if name == "Player":
-			SavedData.hp = hp
-		if hp > 0:
-			state_machine.set_state(state_machine.states.hurt)
-			velocity += dir * force
-		else:
-			state_machine.set_state(state_machine.states.dead)
-			velocity += dir * force * 2
-		
+	if name == "Player":
+		if state_machine.state != state_machine.states.hurt and state_machine.state != state_machine.states.dead and state_machine.state != state_machine.states.dash:
+			_spawn_hit_effect()
+			self.hp -= dam
+			if name == "Player":
+				SavedData.hp = hp
+			if hp > 0:
+				state_machine.set_state(state_machine.states.hurt)
+				velocity += dir * force
+			else:
+				state_machine.set_state(state_machine.states.dead)
+				velocity += dir * force * 2
+	else:
+		if state_machine.state != state_machine.states.hurt and state_machine.state != state_machine.states.dead:
+			_spawn_hit_effect()
+			self.hp -= dam
+			if name == "Player":
+				SavedData.hp = hp
+			if hp > 0:
+				state_machine.set_state(state_machine.states.hurt)
+				velocity += dir * force
+			else:
+				state_machine.set_state(state_machine.states.dead)
+				velocity += dir * force * 2
 		
 func set_hp(new_hp: int) -> void:
 	hp = clamp(new_hp, 0, max_hp)
